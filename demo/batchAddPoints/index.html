@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<link rel="stylesheet" type="text/css" href="../../lib/leaflet/leaflet.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/map.css" />
+		<script src="../../lib/leaflet/leaflet.js"></script>
+		<script src="../../lib/plugins/leaflet.ChineseTmsProviders.js"></script>
+		<script src="../../lib/plugins/leaflet-tilelayer-wmts-src.js"></script>
+
+		<title>海量加点demo</title>
+	</head>
+
+	<body>
+		<div id="map"></div>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/interface.js"></script>
+		<script src="../../lib/plugins/leaflet-heat.js"></script>
+		<script>
+			var map = createMap("map");
+			switchBaseLayer(map, '高德', '道路图');	
+			//批量加点，当点超过3000时，需要使用该功能/方法
+			addBoundsListener(map,function(latMin,lngMin,latMax,lngMax){
+				//移除上一次加的数据
+				removeIcons();
+				//筛选新的数据
+				var data=getDataFromDatabase(latMin,lngMin,latMax,lngMax);
+				//将查询到的点数据添加到地图
+				data.forEach(function(e){
+					addIcon(map,data.lat,data.lng,data.icon,data.id,callback);
+				})
+			})
+			//此法需要根据自己的情况进行修改，根据经纬度范围从自己的数据源中取出范围内的数据
+			function getDataFromDatabase(latMin,lngMin,latMax,lngMax){
+				var data
+				return data;
+			}
+		
+		</script>
+
+	</body>
+
+</html>
