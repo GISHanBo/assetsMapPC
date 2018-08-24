@@ -6,9 +6,11 @@ var drawOptions={
 	//样式模版
 	styleTemplate:{
 		
-		line:{
-			
-		},//线样式
+		// line:{//线样式
+        //    color: "#3388ff",//线颜色
+        //    weight: 3,//线宽
+        //    opacity: 1//透明度
+        // },
 //		device:{//设备样式
 //		  icon:"icon/device/device1.svg",//图标位置
 //		  height:30,//图标高度
@@ -26,14 +28,14 @@ var drawOptions={
 //			manufacturer:""//线路厂家
 //		},
 //		device:{
-//			type:"电缆井",//设备类型
-//			name:1,//设备名称
-//			state:"新立",//设备状态
-//			category:"直线井",//设备类别
-//			size:"空",//设备规格
-//			manufacturer:""//生产厂家
+// 			type:"电缆井",//设备类型
+// 			name:1,//设备名称
+// 			state:"新立",//设备状态
+// 			category:"直线井",//设备类别
+// 			size:"空",//设备规格
+// 			manufacturer:""//生产厂家
 //		}
-	}
+	},
 	devices:[],//设备
 	lines:[],//线
 	map:null
