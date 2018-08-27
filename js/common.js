@@ -21,10 +21,10 @@ var drawOptions={
 	attribute:{
 //		line:{
 //			type:"电缆井",//线路类型
-//			name:1,//设备名称
+//			name:1,//线路名称
 //			state:"新立",//设备状态
 //			length:"",//长度
-//			size:"空",//设备规格
+//			size:"空",//线路规格
 //			manufacturer:""//线路厂家
 //		},
 //		device:{
@@ -38,8 +38,13 @@ var drawOptions={
 	},
 	devices:[],//设备
 	lines:[],//线
-	map:null
-}
+	map:null,
+    markerMove:null,//鼠标进入设备点事件
+    markerOut:null,//鼠标移出设备点事件
+    target:null,//捕捉到的最近点
+    deviceClick:null,//设备点击事件
+    lineClick:null//线点击事件
+};
 
 
 /**

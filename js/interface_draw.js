@@ -12,13 +12,35 @@ function startDrawLine(map) {
     setLineStyle();
     //生成线默认属性
     setLineAttribute();
+
+    //给点设备点图标添加捕捉事件
+    drawOptions.markerMove=function(e){
+        drawOptions.target=e.latlng;
+    };
+    drawOptions.markerOut=function(e){
+        drawOptions.target=null;
+        map.getContainer().style.cursor = "crosshair";
+    };
+    drawOptions.devices.forEach(function (marker) {
+        marker.on("mouseover",drawOptions.markerMove);
+        marker.on("mouseout",drawOptions.markerOut);
+        //关闭点击事件
+        marker.off("click")
+    });
+
+
     var latLngs = [];
     //点击地图，添加设备点
     map.on('click', function (e) {
         if (latLngs.length == 0) {
-            latLngs.push(e.latlng);
+            if(drawOptions.target!=null){
+                latLngs.push(drawOptions.target);
+            }
         } else if (latLngs.length == 1) {
-            latLngs.push(e.latlng);
+            if(drawOptions.target==null){
+                return
+            }
+            latLngs.push(drawOptions.target);
             delete drawOptions.styleTemplate.line.attribution;
             var polyLine = L.polyline(latLngs, drawOptions.styleTemplate.line).addTo(map);
             latLngs = [];
@@ -33,15 +55,20 @@ function startDrawLine(map) {
             polyLine.length=dis.toFixed(1);
             polyLine.manufacturer=lineAttr.manufacturer;
             polyLine.name=lineAttr.name;
-
             drawOptions.lines.push(polyLine);
+            polyLine.on("click",function (e) {
+                if(drawOptions.lineClick){
+                    drawOptions.lineClick(e.target);
+                }
+            })
+            removeLayer(map, "tempLine");
         }
     });
     //鼠标移动实时刷新线的位置
     map.on('mousemove', function (e) {
         if (latLngs.length == 1) {
             drawOptions.styleTemplate.line.attribution = "tempLine";
-            removeLayer(map, drawOptions.styleTemplate.line.attribution);
+            removeLayer(map, "tempLine");
             L.polyline([latLngs[0], e.latlng], drawOptions.styleTemplate.line).addTo(map);
         }
     })
@@ -55,15 +82,31 @@ function startDrawLine(map) {
  * 停止画线
  */
 function stopDrawLine() {
+    drawOptions.styleTemplate.line=null;
     var map = drawOptions.map;
-    //清空颜色模版
-    lineStyleTemplate = null;
     //移除点击监听
     map.off('click');
     map.off('mousemove');
     map.off('contextmenu');
     //恢复鼠标样式
     map.getContainer().style.cursor = "auto";
+
+    drawOptions.markerMove=null;
+    drawOptions.markerOut=null;
+    drawOptions.target=null;
+
+    drawOptions.devices.forEach(function (marker) {
+        //移除每个点标记事件
+        marker.off("mouseover");
+        marker.off("mouseout");
+        //恢复标记的点击
+        marker.on("click",function (e) {
+            if(drawOptions.deviceClick){
+                drawOptions.deviceClick(e.target);
+            }
+        })
+    });
+
 }
 
 /**
@@ -72,9 +115,9 @@ function stopDrawLine() {
  */
 function exportLines() {
     var lines = [];
-    drawOptions.devices.forEach(function (line) {
+    drawOptions.lines.forEach(function (line) {
         var position = line.getLatLngs();
-        var device = {
+        var deviceLine = {
             lat0: position[0].lat,
             lng0: position[0].lng,
             lat1: position[1].lat,
@@ -84,9 +127,9 @@ function exportLines() {
             state: line.state,
             length: line.length,
             size: line.size,
-            manufacturer: marker.manufacturer
+            manufacturer: line.manufacturer
         };
-        lines.push(device);
+        lines.push(deviceLine);
     })
     return lines;
 }
@@ -111,7 +154,8 @@ function startDrawDevice(map) {
         var myIcon = L.icon({
             iconUrl: iconStyle.icon,
             iconSize: [iconStyle.height, iconStyle.width],
-            iconAnchor: [iconStyle.height / 2, iconStyle.width / 2]
+            iconAnchor: [iconStyle.height / 2, iconStyle.width / 2],
+            className:"mssDevices"
         });
         //生成点
         var marker = L.marker(e.latlng, {
@@ -126,10 +170,15 @@ function startDrawDevice(map) {
         marker.size=deviceAttr.size;
         marker.manufacturer=deviceAttr.manufacturer;
         drawOptions.devices.push(marker);
+
+        marker.on("click",function (e) {
+            if(drawOptions.deviceClick){
+                drawOptions.deviceClick(e.target);
+            }
+        })
     })
     //右键停止绘制设备，移动端长按
     map.on("contextmenu", function (e) {
-        exportDevices();
         stopDrawDevice(map)
     })
 }
@@ -139,12 +188,11 @@ function startDrawDevice(map) {
  */
 function stopDrawDevice() {
     var map = drawOptions.map;
-    //清空颜色模版
-    lineStyleTemplate = null;
     //移除点击监听
     map.off('click');
     map.off('contextmenu');
     map.getContainer().style.cursor = "auto";
+    drawOptions.styleTemplate.device=null;
 }
 
 /**
@@ -269,5 +317,16 @@ function clearDraw() {
     drawOptions.attribute = {};
     drawOptions.styleTemplate = {};
 
-    drawOptions.map = null
+    drawOptions.map = null;
+    drawOptions.target=null;
+    drawOptions.markerOut=null;
+    drawOptions.markerMove=null;
+    drawOptions.lineClick=null;
+    drawOptions.deviceClick=null;
+    //清除事件
+    map.off('click');
+    map.off('mousemove');
+    map.off('contextmenu');
+    //恢复鼠标样式
+    map.getContainer().style.cursor = "auto";
 }

@@ -87,15 +87,15 @@ function setZoom(map, level) {
  * @param {number} rotate 图标旋转角度，默认箭头向下，顺时针旋转
  */
 function addHighlight(map, lat, lng, rotate) {
-	var myIcon = L.divIcon({
-		html: "<img src='lib/leaflet/images/locate.png' style='transform: rotate(" + rotate + "deg);' />",
-		className: 'my-locate-icon'
-	});
 
+    var myIcon = L.icon({
+		iconUrl: 'lib/leaflet/images/locate.png',
+		iconSize: [40, 40],
+		iconAnchor: [20, 20]
+	});
 	L.marker([lat, lng], {
 		icon: myIcon,
-		iconSize: [22, 22],
-		iconAnchor: [11, 11],
+		zIndexOffset:1000,
 		attribution: "高亮显示"
 	}).addTo(map);
 }
@@ -154,8 +154,8 @@ function addGeoJson(map, geoJSON) {
 function addIcon(map, lat, lng, icon, id, callback) {
 	var myIcon = L.icon({
 		iconUrl: 'icon/' + icon,
-		iconSize: [30, 30],
-		iconAnchor: [15, 15]
+		iconSize: [34, 34],
+		iconAnchor: [17, 17]
 	});
 	var marker = L.marker([lat, lng], {
 		icon: myIcon,
@@ -241,6 +241,7 @@ function addWMTSLayer(map, url, layer, tilematrixSet, format, name, minZoom, max
  * @param {Object} map 地图对象
  * @param {String} source 来源-MapBox/高德/谷歌/天地图
  * @param {String} type 地图类型-道路图/卫星图
+ * 特殊高德——卫星图无注记，天地图——卫星图无注记
  */
 function switchBaseLayer(map, source, type) {
 	removeLayer(map, "mssBaseLayer");
@@ -257,6 +258,12 @@ function switchBaseLayer(map, source, type) {
 					minZoom: 1,
 					attribution: "mssBaseLayer"
 				}).addTo(map);
+			}else if(type=="卫星图无注记"){
+			L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {
+            					maxZoom: 22,
+            					minZoom: 1,
+            					attribution: "mssBaseLayer"
+            				}).addTo(map);
 			} else {
 				L.tileLayer.chinaProvider('GaoDe.Normal.Map', {
 					maxZoom: 22,
@@ -277,6 +284,12 @@ function switchBaseLayer(map, source, type) {
 					minZoom: 1,
 					attribution: "mssBaseLayer"
 				}).addTo(map);
+			}else if(type=="卫星图无注记"){
+				L.tileLayer.chinaProvider('TianDiTu.Satellite.Map', {
+            					maxZoom: 22,
+            					minZoom: 1,
+            					attribution: "mssBaseLayer"
+            				}).addTo(map);
 			} else {
 				L.tileLayer.chinaProvider('TianDiTu.Normal.Map', {
 					maxZoom: 22,

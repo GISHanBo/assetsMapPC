@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css" />
+		<link rel="stylesheet" type="text/css" href="css/map.css" />
+		<script src="lib/leaflet/leaflet.js"></script>
+		<script src="lib/plugins/leaflet.ChineseTmsProviders.js"></script>
+		<script src="lib/plugins/leaflet-tilelayer-wmts-src.js"></script>
+
+		<title>地图</title>
+	</head>
+
+	<body>
+		<div id="map"></div>
+		<div style="position: absolute;z-index: 1000;left: 0;top: 0">
+			<button id="device_start">开始绘制设备</button>
+			<button id="device_style_model">改变设备默认样式</button>
+			<button id="device_attr">改变设备默认属性</button>
+			<button id="device_click">设备点击修改设备信息</button>
+			<button id="device_stop">停止绘制设备</button>
+			<button id="device_export">控制台导出设备信息</button>
+
+
+			<button id="line_start">开始绘制线</button>
+			<button id="line_style_model">改变线默认样式</button>
+			<button id="line_attr">改变线默认属性</button>
+			<button id="line_click">设备点击修改线信息</button>
+			<button id="line_stop">停止绘制线</button>
+			<button id="line_export">控制台导出线信息</button>
+
+
+			<button id="map_clear">清除所有</button>
+		</div>
+
+		<script src="js/common.js"></script>
+		<script src="lib/plugins/leaflet-heat.js"></script>
+		<script src="js/interface.js"></script>
+		<script src="js/interface_draw.js"></script>
+		<script>
+			var map=createMap("map");
+			switchBaseLayer(map,'高德', '道路图');
+            //添加点击事件
+			document.getElementById("device_start").onclick=function (ev) {
+                startDrawDevice(map);
+			};
+            document.getElementById("device_style_model").onclick=function (ev) {
+                //接下来绘制的点样式会改变
+				//在开始绘制和停止绘制之间有效
+                setDeviceStyle("icon/device/device2.svg",50,50)
+            };
+            document.getElementById("device_attr").onclick=function (ev) {
+                //接下来绘制的点默认属性会改变
+                //在开始绘制和停止绘制之间有效
+                setDeviceAttribute("电力","dd","dd","dd","ss","x厂")
+            };
+            document.getElementById("device_stop").onclick=function (ev) {
+                //绘制过程中，地图右键也可以结束绘制
+                stopDrawDevice();
+            };
+            document.getElementById("device_export").onclick=function (ev) {
+                var devices=exportDevices();
+                console.log(devices)
+            };
+            document.getElementById("device_click").onclick=function (ev) {
+                //接下来点击设备，可以返回设备信息，修改设备信息
+				//在绘制线时，设备的点击查询功能会被强制关闭
+                drawOptions.deviceClick=function (device) {
+                    console.log(device);
+                    device.name="点击设备";//修改设备名称
+                    // device.type/state/category/size/manufacturer//设备类型、设备状态、设备类别、设备规格、生产厂家
+                }
+                //drawOptions.deviceClick=null;//关闭点击事件
+            };
+            document.getElementById("line_start").onclick=function (ev) {
+                startDrawLine(map);
+            };
+            document.getElementById("line_style_model").onclick=function (ev) {
+                //接下来绘制的线样式会改变
+                //在开始绘制和停止绘制之间有效
+                setLineStyle("#000000",6,0.5);
+            };
+
+            document.getElementById("line_attr").onclick=function (ev) {
+                //接下来绘制的点默认属性会改变,
+				//使用默认属性可以减少重复设置属性的工作
+                //在开始绘制和停止绘制之间有效
+				setLineAttribute("电力","dd","dd","dd","x厂");
+            };
+            document.getElementById("line_stop").onclick=function (ev) {
+                //绘制过程中，地图右键也可以结束绘制
+                stopDrawLine();
+            };
+            document.getElementById("line_export").onclick=function (ev) {
+                var lines=exportLines();
+                console.log(lines)
+            };
+            document.getElementById("line_click").onclick=function (ev) {
+                //接下来点线，可以返回线信息，修改设备信息
+                drawOptions.lineClick=function (line) {
+                    console.log(line);
+                    line.name="点击线路";//修改线路名称
+                    // line.type/state/size/manufacturer//线路类型、设备状态、线路规格、线路厂家
+                }
+               //drawOptions.lineClick=null;//关闭点击事件
+            };
+            document.getElementById("map_clear").onclick=function (ev) {
+                clearDraw();
+            };
+
+
+		</script>
+
+	</body>
+
+</html>
