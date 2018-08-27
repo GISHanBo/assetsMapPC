@@ -72,3 +72,4 @@ function removeLayer(map,name) {
         }
     });
 }
+

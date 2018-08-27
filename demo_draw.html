@@ -23,7 +23,7 @@
 			<button id="device_click">设备点击修改设备信息</button>
 			<button id="device_stop">停止绘制设备</button>
 			<button id="device_export">控制台导出设备信息</button>
-
+			<button id="device_delete">点击删除设备</button>
 
 			<button id="line_start">开始绘制线</button>
 			<button id="line_style_model">改变线默认样式</button>
@@ -31,7 +31,7 @@
 			<button id="line_click">设备点击修改线信息</button>
 			<button id="line_stop">停止绘制线</button>
 			<button id="line_export">控制台导出线信息</button>
-
+			<button id="line_delete">点击删除线</button>
 
 			<button id="map_clear">清除所有</button>
 		</div>
@@ -72,8 +72,16 @@
                     console.log(device);
                     device.name="点击设备";//修改设备名称
                     // device.type/state/category/size/manufacturer//设备类型、设备状态、设备类别、设备规格、生产厂家
+					removeDevice(device)//移除设备
                 }
                 //drawOptions.deviceClick=null;//关闭点击事件
+            };
+            document.getElementById("device_delete").onclick=function (ev) {
+                //接下来点击设备，可以返回设备信息，修改设备信息
+                //在绘制线时，设备的点击查询功能会被强制关闭
+                drawOptions.deviceClick=function (device) {
+                    removeDevice(device)//移除设备
+                }
             };
             document.getElementById("line_start").onclick=function (ev) {
                 startDrawLine(map);
@@ -106,6 +114,13 @@
                     // line.type/state/size/manufacturer//线路类型、设备状态、线路规格、线路厂家
                 }
                //drawOptions.lineClick=null;//关闭点击事件
+            };
+            document.getElementById("line_delete").onclick=function (ev) {
+                //接下来点击设备，可以返回设备信息，修改设备信息
+                //在绘制线时，设备的点击查询功能会被强制关闭
+                drawOptions.lineClick=function (line) {
+                    removeLine(line)//移除设备
+                }
             };
             document.getElementById("map_clear").onclick=function (ev) {
                 clearDraw();

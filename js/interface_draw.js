@@ -55,6 +55,7 @@ function startDrawLine(map) {
             polyLine.length=dis.toFixed(1);
             polyLine.manufacturer=lineAttr.manufacturer;
             polyLine.name=lineAttr.name;
+            polyLine.id=Date.now();
             drawOptions.lines.push(polyLine);
             polyLine.on("click",function (e) {
                 if(drawOptions.lineClick){
@@ -163,6 +164,7 @@ function startDrawDevice(map) {
         }).addTo(map);
         //设置点属性
         var deviceAttr=drawOptions.attribute.device;
+        marker.id=Date.now();
         marker.name=deviceAttr.name;
         marker.type=deviceAttr.type;
         marker.state=deviceAttr.state;
@@ -196,6 +198,31 @@ function stopDrawDevice() {
 }
 
 /**
+ * 移除设备
+ * @param {Object} device
+ */
+function removeDevice(device) {
+    debugger
+    for(var i=0;i++;i<drawOptions.devices.length){
+        console.log(device.id);
+        console.log(drawOptions.devices[i].id);
+        if(drawOptions.devices[i].id==device.id){
+            drawOptions.devices.splice(i,1);
+            console.log(i);
+        }
+    }
+    drawOptions.map.removeLayer(device);
+}
+
+/**
+ * 移除设备
+ * @param {Object} line
+ */
+function removeLine(line) {
+
+    drawOptions.map.removeLayer(line);
+}
+/**
  * 设置即将绘制的线图标的样式
  * @param {String} icon 图标url
  * @param {Number} width 图标宽度
@@ -211,7 +238,6 @@ function setDeviceStyle(icon, width, height) {
         width: _height
     }
 }
-
 
 /**
  * 设置接下来要绘制的线的样式
@@ -293,6 +319,9 @@ function exportDevices() {
     })
     return devices;
 }
+
+
+
 
 /**
  * 清楚绘制设备、线、样式
