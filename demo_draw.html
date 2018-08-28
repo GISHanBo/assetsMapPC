@@ -45,77 +45,92 @@
 			switchBaseLayer(map,'高德', '道路图');
             //添加点击事件
 			document.getElementById("device_start").onclick=function (ev) {
+			    alert("开始设备绘制,左键地图进行添加设备，右键可结束绘制状态");
                 startDrawDevice(map);
 			};
             document.getElementById("device_style_model").onclick=function (ev) {
+                alert("设备默认样式已通过代码修改");
                 //接下来绘制的点样式会改变
 				//在开始绘制和停止绘制之间有效
                 setDeviceStyle("icon/device/device2.svg",50,50)
             };
             document.getElementById("device_attr").onclick=function (ev) {
+                alert("设备默认属性已通过代码修改");
                 //接下来绘制的点默认属性会改变
                 //在开始绘制和停止绘制之间有效
                 setDeviceAttribute("电力","dd","dd","dd","ss","x厂")
             };
             document.getElementById("device_stop").onclick=function (ev) {
+                alert("已结束设备绘制")
                 //绘制过程中，地图右键也可以结束绘制
                 stopDrawDevice();
             };
             document.getElementById("device_export").onclick=function (ev) {
+                alert("设备信息已导出，可在控制台查看");
                 var devices=exportDevices();
                 console.log(devices)
             };
             document.getElementById("device_click").onclick=function (ev) {
+                alert("点击设备，设备信息会在控制台输出，通过代码修改设备信息");
                 //接下来点击设备，可以返回设备信息，修改设备信息
 				//在绘制线时，设备的点击查询功能会被强制关闭
                 drawOptions.deviceClick=function (device) {
                     console.log(device);
                     device.name="点击设备";//修改设备名称
+                    //var _type=device.type//获取设备信息
                     // device.type/state/category/size/manufacturer//设备类型、设备状态、设备类别、设备规格、生产厂家
-					removeDevice(device)//移除设备
                 }
                 //drawOptions.deviceClick=null;//关闭点击事件
             };
             document.getElementById("device_delete").onclick=function (ev) {
+                alert("点击设备会进行设备删除");
                 //接下来点击设备，可以返回设备信息，修改设备信息
                 //在绘制线时，设备的点击查询功能会被强制关闭
                 drawOptions.deviceClick=function (device) {
                     removeDevice(device)//移除设备
                 }
             };
+
             document.getElementById("line_start").onclick=function (ev) {
+                alert("开始绘制线，线的两端必须是设备,鼠标指到设备会自动进行捕捉");
                 startDrawLine(map);
             };
             document.getElementById("line_style_model").onclick=function (ev) {
+                alert("线默认样式已通过代码修改");
                 //接下来绘制的线样式会改变
                 //在开始绘制和停止绘制之间有效
                 setLineStyle("#000000",6,0.5);
             };
-
             document.getElementById("line_attr").onclick=function (ev) {
+                alert("线默认属性已通过代码修改");
                 //接下来绘制的点默认属性会改变,
 				//使用默认属性可以减少重复设置属性的工作
                 //在开始绘制和停止绘制之间有效
 				setLineAttribute("电力","dd","dd","dd","x厂");
             };
             document.getElementById("line_stop").onclick=function (ev) {
+                alert("已停止线绘制");
                 //绘制过程中，地图右键也可以结束绘制
                 stopDrawLine();
             };
             document.getElementById("line_export").onclick=function (ev) {
+                alert("线信息已导出，可在控制台查看");
                 var lines=exportLines();
                 console.log(lines)
             };
             document.getElementById("line_click").onclick=function (ev) {
+                alert("点击线，线信息会在控制台输出，通过代码修改线信息");
                 //接下来点线，可以返回线信息，修改设备信息
                 drawOptions.lineClick=function (line) {
                     console.log(line);
                     line.name="点击线路";//修改线路名称
+                    //var _type=line.type//获取线路信息
                     // line.type/state/size/manufacturer//线路类型、设备状态、线路规格、线路厂家
                 }
                //drawOptions.lineClick=null;//关闭点击事件
             };
             document.getElementById("line_delete").onclick=function (ev) {
+                alert("点击线会进行设备删除");
                 //接下来点击设备，可以返回设备信息，修改设备信息
                 //在绘制线时，设备的点击查询功能会被强制关闭
                 drawOptions.lineClick=function (line) {
@@ -123,6 +138,8 @@
                 }
             };
             document.getElementById("map_clear").onclick=function (ev) {
+                alert("清除地图上所有绘制元素和事件");
+                //清除地图上所有绘制元素和事件
                 clearDraw();
             };
 

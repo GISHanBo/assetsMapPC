@@ -202,13 +202,10 @@ function stopDrawDevice() {
  * @param {Object} device
  */
 function removeDevice(device) {
-    debugger
-    for(var i=0;i++;i<drawOptions.devices.length){
-        console.log(device.id);
-        console.log(drawOptions.devices[i].id);
+    for(var i=0;i<drawOptions.devices.length;i++){
         if(drawOptions.devices[i].id==device.id){
             drawOptions.devices.splice(i,1);
-            console.log(i);
+            break
         }
     }
     drawOptions.map.removeLayer(device);
@@ -219,7 +216,12 @@ function removeDevice(device) {
  * @param {Object} line
  */
 function removeLine(line) {
-
+    for(var i=0;i<drawOptions.lines.length;i++){
+        if(drawOptions.lines[i].id==line.id){
+            drawOptions.lines.splice(i,1);
+            break
+        }
+    }
     drawOptions.map.removeLayer(line);
 }
 /**
@@ -319,9 +321,6 @@ function exportDevices() {
     })
     return devices;
 }
-
-
-
 
 /**
  * 清楚绘制设备、线、样式
